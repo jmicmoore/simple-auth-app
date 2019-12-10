@@ -1,13 +1,19 @@
 {
   "name": "simple-auth-app",
   "version": "1.0.0",
-  "description": "",
+  "description": "Simple app that helps test out OAuth / auth code flow",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Jerry Moore <jmicmoore@gmail.com>",
   "license": "ISC",
+  "keywords": [
+    "oauth",
+    "oidc",
+    "nodejs",
+    "authentication"
+  ],
   "devDependencies": {
     "eslint": "^6.6.0"
   },
