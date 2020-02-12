@@ -7,6 +7,7 @@ const cors = require('cors');
 const session = require('express-session');
 const auth = require('./middleware/authMiddleware');
 const resourceController = require('./controllers/resourceController');
+const config = require('./config');
 
 const publicApp = express();
 const app = express();
@@ -25,7 +26,15 @@ const sessionConfig = {
     saveUninitialized: true
 };
 
+function errorHandler (err, req, res, next) {
+    console.error(err);
+    if (!res.headersSent) {
+        res.status(500).send('Unexpected error - see logs for details.');
+    }
+}
+
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(session(sessionConfig));
 
@@ -38,14 +47,21 @@ app.get('/resource',
 );
 
 app.get('/oauth2/callback',
+    auth.validateReturningState,
     auth.getToken
 );
 app.post('/oauth2/callback',
+    auth.validateReturningState,
     auth.getToken
 );
+
+// must go last!
+app.use(errorHandler);
+
+console.log(`Configuration:  ${JSON.stringify(config)}`)
 
 var httpServer = http.createServer(publicApp);
 var httpsServer = https.createServer(credentials, app);
 
 httpServer.listen(port, () => console.log(`Example app listening on port ${port}!`));
-httpsServer.listen(securePort, () => console.log(`Example app listening on port ${securePort}!`));
+httpsServer.listen(securePort, () => console.log(`Example app listening on secure port ${securePort}!`));
