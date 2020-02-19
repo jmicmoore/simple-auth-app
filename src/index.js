@@ -55,6 +55,10 @@ app.post('/oauth2/callback',
     auth.getToken
 );
 
+app.post('/oauth2/unsolicitedCallback',
+    auth.getToken
+);
+
 // must go last!
 app.use(errorHandler);
 

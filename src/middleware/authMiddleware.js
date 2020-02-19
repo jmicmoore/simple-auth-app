@@ -32,12 +32,27 @@ module.exports.validateReturningState = (req, res, next) => {
 }
 
 module.exports.getToken = (req, res, next) => {
-    const state = req.session.state;
+    const state = req.session.state || (req.query.state && JSON.parse(req.query.state));
+    if(!state){
+        console.log('Missing state!');
+        res.status(401).send('Unauthorized');
+        return;
+    }
 
     if(authFlow === 'implicit'){
+        if(!req.body.id_token){
+            console.log('Missing id_token!');
+            res.status(401).send('Unauthorized');
+            return;
+        }
         console.log('received id_token:  ' + JSON.stringify(req.body.id_token));
         saveTokenAndRedirect(req, res, req.body.id_token, state);
     } else { // auth code flow
+        if(!req.query.code){
+            console.log('Missing code!');
+            res.status(401).send('Unauthorized');
+            return;
+        }
         const tokenUrl = `https://${authDomain}/oauth/token`;
         console.log(`Auth code flow - getting token from '${tokenUrl}'`);
         agent
