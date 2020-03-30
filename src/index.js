@@ -35,8 +35,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(session(sessionConfig));
 
-// publicApp.get('/', (req, res) => res.send('Hello World!'));
-// app.get('/', (req, res) => res.send('Hello World Secure!'));
+app.get('/home', (req, res) => res.send('Hello World!  We are home.'));
 
 app.get('/resource',
     auth.checkUser,
@@ -54,6 +53,10 @@ app.post('/oauth2/callback',
 
 app.get('/oauth2/unsolicitedCallback',
     auth.getToken
+);
+
+app.get('/oauth2/logout',
+    auth.logout
 );
 
 // must go last!

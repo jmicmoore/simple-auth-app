@@ -1,12 +1,14 @@
 const agent = require('superagent');
+const crypto = require('crypto');
 const {appClientId, appSecret, authDomain, redirectUri, authFlow} = require('../config');
 
 module.exports.checkUser = (req, res, next) => {
     console.log('Checking for token....');
     if(!req.session.token){
         console.log('No token');
+        let nonce = crypto.randomBytes(16).toString('base64');
         const state = {
-            'xyz123': {
+            [nonce] : {
                 originalUrl: req.originalUrl
             }
         };
@@ -29,7 +31,7 @@ module.exports.validateReturningState = (req, res, next) => {
     } else {
         next();
     }
-}
+};
 
 // Important things to keep in mind:
 //
@@ -89,11 +91,22 @@ module.exports.getToken = (req, res, next) => {
                 saveTokenAndRedirect(req, res, tokenResponse.body.id_token, state);
             })
             .catch( err => {
+                console.log('Error: ', err);
                 res.status(401).send('Unauthorized');
                 next(err);
             });
     }
 };
+
+module.exports.logout = (req, res) => {
+    console.log('Logout user');
+    delete req.session.token;
+    delete req.session.state;
+    // const logoutUrl = `https://${authDomain}/v2/logout?returnTo=https://localhost:3001/home&client_id=${appClientId}&federated`;
+    // also try returnTo=https://jwt.io
+    const logoutUrl = `https://${authDomain}/v2/logout?client_id=${appClientId}&returnTo=https://jwt.io&federated`;
+    res.redirect(logoutUrl);
+}
 
 const encode = (value) => encodeURIComponent(JSON.stringify(value));
 
