@@ -40,6 +40,7 @@ module.exports.validateReturningState = (req, res, next) => {
 // - ONLY IF it was supplied in the original /authorize call
 // - Otherwise the redirect_uri is not needed in the /token call
 //
+//
 // For using Auth0 for SAML / IDP-Driven flow,
 // In the connection > IDP-Initiated SSO > Query String you can specify the redirect_uri.
 // This redirect_uri from Query String is passed along to the /authorize call as an argument.
