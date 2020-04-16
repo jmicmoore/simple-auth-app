@@ -103,8 +103,6 @@ module.exports.logout = (req, res) => {
     console.log('Logout user');
     delete req.session.token;
     delete req.session.state;
-    // const logoutUrl = `https://${authDomain}/v2/logout?returnTo=https://localhost:3001/home&client_id=${appClientId}&federated`;
-    // also try returnTo=https://jwt.io
     const logoutUrl = `https://${authDomain}/v2/logout?client_id=${appClientId}&returnTo=https://jwt.io&federated`;
     res.redirect(logoutUrl);
 }
